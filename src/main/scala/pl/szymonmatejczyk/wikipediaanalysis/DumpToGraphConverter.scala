@@ -9,9 +9,13 @@ import scala.util.matching.Regex
 object DumpToGraphConverter extends App {
 
   val xmlFile = args(0)
-  val outputLocation = new File(args(1))
 
-  val out = new FileOutputStream(outputLocation)
+  var out: Option[FileOutputStream] = None
+
+  if (args.length > 1) {
+    val outputLocation = new File(args(1))
+    out = Some(new FileOutputStream(outputLocation))
+  }
 
   val xml = new XMLEventReader(Source.fromFile(xmlFile))
 
@@ -54,6 +58,7 @@ object DumpToGraphConverter extends App {
           linksInLine.foreach {
             case pattern(name) =>
               links += name
+            case _ => ()
           }
         }
       }
@@ -62,10 +67,20 @@ object DumpToGraphConverter extends App {
   }
 
   def writePage(pageName: String, links: collection.Set[String]) = {
-    println(pageName + " " + links.size)
-    print(links.mkString("", "\n", "\n"))
+    out match {
+      case Some(o) =>
+        o.write((pageName + " " + links.size).getBytes())
+        o.write(links.map(x => x.replace(" ", "_")).mkString("", "\n", "\n").getBytes())
+        o.flush()
+      case None =>
+        println(pageName + " " + links.size)
+        print(links.map(x => x.replace(" ", "_")).mkString("", "\n", "\n"))
+    }
   }
 
-  out.close()
+  out match {
+    case Some(o) => o.close()
+    case None => ()
+  }
 
 }
