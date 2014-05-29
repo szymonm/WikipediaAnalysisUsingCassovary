@@ -69,7 +69,7 @@ object DumpToGraphConverter extends App {
   def writePage(pageName: String, links: collection.Set[String]) = {
     out match {
       case Some(o) =>
-        o.write((pageName + " " + links.size).getBytes())
+        o.write((pageName + " " + links.size + "\n").getBytes())
         o.write(links.map(x => x.replace(" ", "_")).mkString("", "\n", "\n").getBytes())
         o.flush()
       case None =>
