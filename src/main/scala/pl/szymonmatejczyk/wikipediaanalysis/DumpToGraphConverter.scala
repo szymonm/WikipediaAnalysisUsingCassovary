@@ -68,12 +68,12 @@ class DumpToGraphConverter(inputFilename: String, outputFilename: Option[String]
     def writePage(pageName: String, links: collection.Set[String]) = {
       out match {
         case Some(o) =>
-          o.write((pageName + " " + links.size + "\n").getBytes())
-          o.write(links.map(x => x.replace(" ", "_")).mkString("", "\n", "\n").getBytes())
+          o.write((pageName + " " + links.size).getBytes())
+          o.write(links.map(x => x.replace(" ", "_")).mkString("\n", "\n", "\n").getBytes())
           o.flush()
         case None =>
-          println(pageName + " " + links.size)
-          print(links.map(x => x.replace(" ", "_")).mkString("", "\n", "\n"))
+          print(pageName + " " + links.size)
+          print(links.map(x => x.replace(" ", "_")).mkString("\n", "\n", "\n"))
       }
     }
 
